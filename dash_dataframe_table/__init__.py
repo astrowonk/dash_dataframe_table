@@ -58,11 +58,8 @@ def _make_row(
         """Add links to tables in the right way and handle nan strings."""
         style = None
         if cell_style_entry := cell_style_dict.get(col_name):
-            print(f"found {col_name}")
             if isinstance(cell_style_entry[0], list):
-                print(
-                    f"found list the value {data_dict_entry[col_name]} - the  criteria {cell_style_entry[0]}"
-                )
+
                 if data_dict_entry[col_name] in cell_style_entry[0]:
                     print(f"style being set to {cell_style_entry[1]}")
                     style = cell_style_entry[1]
@@ -71,8 +68,7 @@ def _make_row(
                     style = cell_style_entry[1]
 
         if (thehref := f"{col_name}{link_column_suffix}") in link_names:
-            print(data_dict_entry[thehref])
-            print(str(data_dict_entry[col_name]))
+
             if data_dict_entry[thehref].startswith("http"):
                 return html.Td(html.A(
                     str(data_dict_entry[col_name]),
@@ -86,7 +82,6 @@ def _make_row(
                 ))
         elif isinstance(data_dict_entry[col_name], float):
             return str(int(nan_to_num(data_dict_entry[col_name])))
-        print(style)
         return html.Td(str(data_dict_entry[col_name]), style=style)
 
     link_names = [x for x in col_names if x.endswith(link_column_suffix)]
