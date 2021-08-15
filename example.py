@@ -4,7 +4,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 import pandas as pd
 import datetime
-from dash_dataframe_table import EnhancedTable
+import dash_dataframe_table
 
 with open("example.md", "r") as myfile:
     markdown_text = myfile.read()
@@ -73,7 +73,7 @@ cell_style_dict = {
 col_one = dbc.Col(dcc.Markdown(markdown_text), )
 col_two = dbc.Col([
     html.H4('Rendered Table from Dataframe'),
-    EnhancedTable.from_dataframe(
+    dbc.Table.from_enhanced_dataframe(
         df,
         striped=True,
         cell_style_dict=cell_style_dict,
