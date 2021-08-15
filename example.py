@@ -18,6 +18,7 @@ app = dash.Dash("example of dataframe",
                         "content": "width=device-width, initial-scale=1"
                     },
                 ])
+server = app.server
 
 the_list = [
     "Apple", "Google", "Yahoo", "Facebook", "Microsoft", "Amazon", "IBM",
