@@ -7,7 +7,7 @@ This is still a work in progress. The new method doesn't quite have the same fun
 
 ## Live Examples
 
-The [example.py file is running live on my site](https://marcoshuerta.com/dash/table_example/)
+See the [example.py file running live](https://marcoshuerta.com/dash/table_example/).
 
 ## Installation
 
