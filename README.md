@@ -11,7 +11,7 @@ The [example.py file is running live on my site](https://marcoshuerta.com/dash/t
 
 ## Installation
 
-setup.py installs an egg which was causing dash to crash when debugging for reasons I can't explain. So clone and do the `pip install .` tric
+setup.py installs an egg which was causing dash to crash when debugging for reasons I can't explain. So clone and do the `pip install .` Maybe because I'm subclassing a component directly and that's not how components are generally created?
 
 ```
 git clone https://github.com/astrowonk/dash_dataframe_table.git
