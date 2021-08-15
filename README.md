@@ -5,11 +5,21 @@ I need to be able to easily create hyperlinks for a table from dataframe, the ea
 
 This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. The conditional formatting is nice but doesn't extend to multiple criteria in the same column.
 
+## Installation
+
+setup.py installs an egg which was causing dash to crash when debugging for reasons I can't explain. So clone and do the `pip install .` tric
+
+```
+git clone https://github.com/astrowonk/dash_dataframe_table.git
+pip install .
+```
+
+
+### Usage, Examples
+
 The `example.py` dash app shows it in action, both adding links automatically to the company column name, and styling the columns conditionally.
 
 I'm still debating if I should just monkey patch a new method onto `dbc.Table` or just subclass it as I've done here.
-
-### Usage, Examples
 
 The company column is given hyperlinks from a midden `Company_HREF` column. See the `example.py` dash app code for more.
 
