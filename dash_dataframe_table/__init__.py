@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 import dash_html_components as html
 import dash_core_components as dcc
 from numpy import nan_to_num
+import pandas as pd
 
 from dash.development.base_component import Component
 
@@ -13,10 +14,14 @@ class EnhancedTable(dbc.Table):
 
     @classmethod
     def from_dataframe(cls,
-                       _df,
+                       df,
                        columns=None,
                        link_column_suffix='_HREF',
                        cell_style_dict=None,
+                       float_format='.2f',
+                       index=False,
+                       index_label=None,
+                       date_format=None,
                        **table_kwargs):
         """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
         
@@ -27,11 +32,20 @@ class EnhancedTable(dbc.Table):
         if condition is a string, it must match the value of the column exactly. 
         
         """
-        if _df.empty:
+        if df.empty:
             return cls()
+        if index:
+            df = df.reset_index()
+            if index_label is not None:
+                df = df.rename(columns={"index": index_label})
+
+        if date_format is not None:
+            for c in df.select_dtypes(["datetime"]).columns:
+                df[c] = pd.to_datetime(df[c])
+
         if columns is None:
-            columns = _df.columns
-        data_dict = _df[columns].to_dict(orient='records')
+            columns = df.columns
+        data_dict = df[columns].to_dict(orient='records')
 
         col_names = list(data_dict[0].keys())
         header_column_cells = [
@@ -41,27 +55,31 @@ class EnhancedTable(dbc.Table):
         table_header = [html.Thead(html.Tr(header_column_cells))]
         table_body = [
             html.Tbody([
-                EnhancedTable._make_row(x,
-                                        col_names,
-                                        link_column_suffix,
-                                        cell_style_dict=cell_style_dict)
-                for x in data_dict
+                cls._make_row(x,
+                              col_names,
+                              link_column_suffix,
+                              cell_style_dict=cell_style_dict,
+                              float_format=float_format,
+                              date_format=date_format) for x in data_dict
             ])
         ]
         return cls(table_header + table_body, **table_kwargs)
 
     @classmethod
-    def _make_row(
-        cls,
-        data_dict_entry,
-        col_names,
-        link_column_suffix,
-        cell_style_dict=None,
-    ):
+    def _make_row(cls,
+                  data_dict_entry,
+                  col_names,
+                  link_column_suffix,
+                  cell_style_dict=None,
+                  float_format='.2f',
+                  date_format=None):
         if cell_style_dict is None:
             cell_style_dict = {}
 
-        def process_table_cell(col_name, link_names):
+        def process_table_cell(
+            col_name,
+            link_names,
+        ):
             """Add links to tables in the right way and handle nan strings."""
             style = None
             if cell_style_entry := cell_style_dict.get(col_name):
@@ -87,7 +105,14 @@ class EnhancedTable(dbc.Table):
                         href=str(data_dict_entry[thehref], style=style),
                     ))
             elif isinstance(data_dict_entry[col_name], float):
-                return str(int(nan_to_num(data_dict_entry[col_name])))
+                return html.Td(
+                    f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
+                    style=style)
+            elif date_format and isinstance(data_dict_entry[col_name],
+                                            pd.Timestamp):
+
+                return html.Td(data_dict_entry[col_name].strftime(date_format),
+                               style=style)
             return html.Td(str(data_dict_entry[col_name]), style=style)
 
         link_names = [x for x in col_names if x.endswith(link_column_suffix)]
