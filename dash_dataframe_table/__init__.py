@@ -61,7 +61,6 @@ def _make_row(
             if isinstance(cell_style_entry[0], list):
 
                 if data_dict_entry[col_name] in cell_style_entry[0]:
-                    print(f"style being set to {cell_style_entry[1]}")
                     style = cell_style_entry[1]
             elif callable(cell_style_entry[0]):
                 if cell_style_entry[0](data_dict_entry[col_name]):
