@@ -25,7 +25,7 @@ my_style_dict = {
 ...
 
 html.Div(
-            make_table_from_df(df, striped=True, cell_style_dict=my_style_dict)
+            EnhancedTable.from_dataframe(df, striped=True, cell_style_dict=my_style_dict)
         )
 ```
 
