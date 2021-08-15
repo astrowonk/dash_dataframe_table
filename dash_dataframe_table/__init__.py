@@ -92,13 +92,18 @@ class EnhancedTable(dbc.Table):
             """Add links to tables in the right way and handle nan strings."""
             style = {}
             if cell_style_entry := cell_style_dict.get(col_name):
-                if isinstance(cell_style_entry[0], list):
+                if isinstance(cell_style_entry, list):
+                    for item in cell_style_entry:
+                        if data_dict_entry[col_name] in item[0]:
+                            style = item[1]
+                            print(style)
 
-                    if data_dict_entry[col_name] in cell_style_entry[0]:
-                        style = cell_style_entry[1]
-                elif callable(cell_style_entry[0]):
-                    if cell_style_entry[0](data_dict_entry[col_name]):
-                        style = cell_style_entry[1]
+                elif callable(cell_style_entry):
+                    if theStyle := cell_style_entry(data_dict_entry[col_name]):
+                        assert isinstance(
+                            theStyle, dict
+                        ), "cell_style Callable must return a dictionary"
+                        style = theStyle
                 else:
                     style = {}
             if (thehref := f"{col_name}{link_column_suffix}") in link_names:
@@ -108,7 +113,8 @@ class EnhancedTable(dbc.Table):
                         str(data_dict_entry[col_name]),
                         href=str(data_dict_entry[thehref]),
                     ),
-                                   style=style)
+                                   style=style,
+                                   className=style.get('className'))
                 return html.Td(
                     dcc.Link(
                         str(data_dict_entry[col_name]),
@@ -119,7 +125,8 @@ class EnhancedTable(dbc.Table):
             elif isinstance(data_dict_entry[col_name], float):
                 return html.Td(
                     f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
-                    style=style)
+                    style=style,
+                    className=style.get('className'))
             elif date_format and isinstance(data_dict_entry[col_name],
                                             pd.Timestamp):
 

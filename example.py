@@ -37,17 +37,35 @@ df = pd.DataFrame([{
     "Date": date_list[n]
 } for n, x in enumerate(the_list)])
 
+
+def color_positive(val):
+
+    if val > 0:
+        return {'className': 'table-success'}
+    elif val < 0:
+        return {'className': "table-warning"}
+
+
 ## make the conditional styling dictionary
 cell_style_dict = {
-    'Company': (['Yahoo', 'Apple'], {
-        'font-weight': 'bold'
-    }),
-    'Value': (lambda x: x > 0, {
+    'Company': [
+        (['Yahoo', 'Apple'], {
+            'font-weight': 'bold'
+        }),
+        (['Oracle'], {
+            'className': 'table-danger'
+        }),
+    ],
+    'Value2':
+    lambda x: {
         'background-color': '#7FFFD4'
-    }),
-    'Date': (lambda x: x.weekday() == 4, {
-        'className': 'table-warning'
-    }),
+    } if x > 10 else {},
+    'Date':
+    lambda x: {
+        'className': 'table-info'
+    } if x.weekday() in [4, 6] else {},
+    'Value':
+    color_positive
 }
 
 col_one = dbc.Col(dcc.Markdown(markdown_text), )
