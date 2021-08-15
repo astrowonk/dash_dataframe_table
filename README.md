@@ -16,15 +16,34 @@ The company column is given hyperlinks from a midden `Company_HREF` column. See 
 The method on this class also supports conditional style formatting. This can either be a list of matching values, or a callable that returns a boolean. 
 
 ```python
-my_style_dict = {
-    'Company': (['Yahoo', 'Apple'], {
-        'font-weight': 'bold'
-    }),
-    'Value': (lambda x: x > 0, {
+
+def color_positive(val):
+
+    if val > 0:
+        return {'className': 'table-success'}
+    elif val < 0:
+        return {'className': "table-warning"}
+
+cell_style_dict = {
+    'Company': [
+        (['Yahoo', 'Apple'], {
+            'font-weight': 'bold'
+        }),
+        (['Oracle'], {
+            'className': 'table-danger'
+        }),
+    ],
+    'Value2':
+    lambda x: {
         'background-color': '#7FFFD4'
-    })
+    } if x > 10 else {},
+    'Date':
+    lambda x: {
+        'className': 'table-info'
+    } if x.weekday() in [4, 6] else {},
+    'Value':
+    color_positive
 }
-...
 
 html.Div(
             EnhancedTable.from_dataframe(df, striped=True, cell_style_dict=my_style_dict)

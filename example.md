@@ -13,6 +13,16 @@ Criteria can either be a list of tuples `(match_list,style_dict)` or a `callable
 The code below generates the conditional formatting you see. You can also add a specific bootstrap class by putting a `className` key in the "style" dictionary.
 
 ```python
+
+def color_positive(val):
+
+    if val > 0:
+        return {'className': 'table-success'}
+    elif val < 0:
+        return {'className': "table-warning"}
+
+
+
 cell_style_dict = {
     'Company': [
         (['Yahoo', 'Apple'], {
