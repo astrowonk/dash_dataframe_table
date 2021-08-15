@@ -5,6 +5,10 @@ I need to be able to easily create hyperlinks for a table from dataframe, the ea
 
 This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. The conditional formatting is nice but doesn't extend to multiple criteria in the same column.
 
+## Live Examples
+
+The [example.py file is running live on my site](https://marcoshuerta.com/dash/table_example/)
+
 ## Installation
 
 setup.py installs an egg which was causing dash to crash when debugging for reasons I can't explain. So clone and do the `pip install .` tric
