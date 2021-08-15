@@ -8,11 +8,11 @@ def _clean_header_names(x):
     return x.replace('_', ' ').title()
 
 
-def make_table_from_df(
-    _df,
-    columns=None,
-    link_column_suffix='_HREF',
-):
+def make_table_from_df(_df,
+                       columns=None,
+                       link_column_suffix='_HREF',
+                       cell_style_dict=None):
+    """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns"""
     if _df.empty:
         return dbc.Table()
     if columns is None:
