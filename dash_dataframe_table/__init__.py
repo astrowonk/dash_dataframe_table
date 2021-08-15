@@ -4,8 +4,6 @@ import dash_core_components as dcc
 from numpy import nan_to_num
 import pandas as pd
 
-from dash.development.base_component import Component
-
 
 class EnhancedTable(dbc.Table):
     @classmethod
