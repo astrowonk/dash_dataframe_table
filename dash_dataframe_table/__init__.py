@@ -43,7 +43,16 @@ class EnhancedTable(dbc.Table):
             for c in df.select_dtypes(["datetime"]).columns:
                 df[c] = pd.to_datetime(df[c])
 
-        if columns is None:
+        if columns is not None:
+            # needed in case columns keyword would otherwise remove  out the link column
+            column_order_dict = {key: val for val, key in enumerate(columns)}
+            columns = sorted(
+                set(
+                    list(columns) +
+                    [f"{col + link_column_suffix}"
+                     for col in df.columns]).intersection(set(df.columns)),
+                key=lambda x: column_order_dict.get(x, float('inf')))
+        else:
             columns = df.columns
         data_dict = df[columns].to_dict(orient='records')
 
@@ -81,7 +90,7 @@ class EnhancedTable(dbc.Table):
             link_names,
         ):
             """Add links to tables in the right way and handle nan strings."""
-            style = None
+            style = {}
             if cell_style_entry := cell_style_dict.get(col_name):
                 if isinstance(cell_style_entry[0], list):
 
@@ -90,7 +99,8 @@ class EnhancedTable(dbc.Table):
                 elif callable(cell_style_entry[0]):
                     if cell_style_entry[0](data_dict_entry[col_name]):
                         style = cell_style_entry[1]
-
+                else:
+                    style = {}
             if (thehref := f"{col_name}{link_column_suffix}") in link_names:
 
                 if data_dict_entry[thehref].startswith("http"):
@@ -102,7 +112,9 @@ class EnhancedTable(dbc.Table):
                 return html.Td(
                     dcc.Link(
                         str(data_dict_entry[col_name]),
-                        href=str(data_dict_entry[thehref], style=style),
+                        href=str(data_dict_entry[thehref],
+                                 style=style,
+                                 className=style.get('className')),
                     ))
             elif isinstance(data_dict_entry[col_name], float):
                 return html.Td(
@@ -112,8 +124,11 @@ class EnhancedTable(dbc.Table):
                                             pd.Timestamp):
 
                 return html.Td(data_dict_entry[col_name].strftime(date_format),
-                               style=style)
-            return html.Td(str(data_dict_entry[col_name]), style=style)
+                               style=style,
+                               className=style.get('className'))
+            return html.Td(str(data_dict_entry[col_name]),
+                           style=style,
+                           className=style.get('className'))
 
         link_names = [x for x in col_names if x.endswith(link_column_suffix)]
         return html.Tr([

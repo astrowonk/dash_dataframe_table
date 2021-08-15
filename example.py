@@ -6,6 +6,9 @@ import pandas as pd
 import datetime
 from dash_dataframe_table import EnhancedTable
 
+with open("example.md", "r") as myfile:
+    markdown_text = myfile.read()
+
 app = dash.Dash("example of dataframe",
                 external_stylesheets=[dbc.themes.YETI],
                 title="Example Data Frame",
@@ -18,7 +21,7 @@ app = dash.Dash("example of dataframe",
 
 the_list = [
     "Apple", "Google", "Yahoo", "Facebook", "Microsoft", "Amazon", "IBM",
-    "Intel", "Oracle", "Intel"
+    "Intel", "Oracle"
 ]
 
 start_date = datetime.datetime(2018, 1, 1)
@@ -30,32 +33,38 @@ df = pd.DataFrame([{
     'Company': x,
     "Company_HREF": f"https://{x.lower()}.com",
     "Value": (n - 4) / 13,
+    "Value2": (n**4) / 13,
     "Date": date_list[n]
 } for n, x in enumerate(the_list)])
 
 ## make the conditional styling dictionary
-my_style_dict = {
+cell_style_dict = {
     'Company': (['Yahoo', 'Apple'], {
         'font-weight': 'bold'
     }),
     'Value': (lambda x: x > 0, {
         'background-color': '#7FFFD4'
-    })
+    }),
+    'Date': (lambda x: x.weekday() == 4, {
+        'className': 'table-warning'
+    }),
 }
 
-app.layout = dbc.Container(
-    [
-        html.H4('Example Table from Dataframe'),
-        ### maybe it shouldn't return a dbc table but rather the elemnts of the table so one can choose dbc or dcc
-        html.Div(
-            EnhancedTable.from_dataframe(df,
-                                         striped=True,
-                                         cell_style_dict=my_style_dict,
-                                         id='hello',
-                                         float_format='.2f',
-                                         date_format='%Y-%m-%d'), )
-    ],
-    style={'margin-top': '10px'})
+col_one = dbc.Col(dcc.Markdown(markdown_text), )
+col_two = dbc.Col([
+    html.H4('Rendered Table from Dataframe'),
+    EnhancedTable.from_dataframe(
+        df,
+        striped=True,
+        cell_style_dict=cell_style_dict,
+        id='hello',
+        float_format='.2f',
+        date_format='%Y-%m-%d',
+        columns=['Company', 'Date', 'Value', 'Value2']),
+])
+
+app.layout = dbc.Container([dbc.Row([col_one, col_two])],
+                           style={'margin-top': '10px'})
 
 if __name__ == "__main__":
     app.run_server(debug=True)

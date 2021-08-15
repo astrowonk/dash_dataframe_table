@@ -3,9 +3,7 @@
 
 I need to be able to easily create hyperlinks for a table from dataframe, the easiest way being based on another column in the same dataframe. This will wrap `column` in the link from `column_HREF` by default. You can specify a different suffix.
 
-Still a work in progress, it needs more documentation.
-
-The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`.
+This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. The conditional formatting is nice but doesn't extend to multiple criteria in the same column.
 
 The `example.py` dash app shows it in action, both adding links automatically to the company column name, and styling the columns conditionally.
 
@@ -13,7 +11,7 @@ I'm still debating if I should just monkey patch a new method onto `dbc.Table` o
 
 ### Usage, Examples
 
-The company column is given hyperlinks from a midden `Company_HREF` column. 
+The company column is given hyperlinks from a midden `Company_HREF` column. See the `example.py` dash app code for more.
 
 The method on this class also supports conditional style formatting. This can either be a list of matching values, or a callable that returns a boolean. 
 
