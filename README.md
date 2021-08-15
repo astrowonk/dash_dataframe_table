@@ -30,4 +30,13 @@ html.Div(
 ```
 
 
+### Screenshots
+
+#### Dataframe in Jupyter
+
+![Screen Shot 2021-08-15 at 9 31 32 AM](https://user-images.githubusercontent.com/13702392/129480284-abe914ae-d5a7-4618-9b73-9c7f3bbd5ff9.png)
+
+
+#### Rendered table in Dash
+
 ![Screen Shot 2021-08-15 at 12 27 12 AM](https://user-images.githubusercontent.com/13702392/129467178-b71e30fb-723e-413e-9e0f-57d657c3f3a6.png)
