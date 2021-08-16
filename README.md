@@ -3,7 +3,7 @@
 
 I need to be able to easily create hyperlinks for a table from dataframe, the easiest way being based on another column in the same dataframe. This will wrap `column` in the link from `column_HREF` by default. You can specify a different suffix.
 
-This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. The conditional formatting is nice but doesn't extend to multiple criteria in the same column.
+This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. I'm still settling on a subclass or patching a new class method onto `dbc.Table` (which you can see in the other branch).
 
 ## Live Examples
 
