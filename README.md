@@ -1,5 +1,5 @@
 
-## Links in Dash Bootstrap dataframes
+## Dash Bootstrap tabels from dataframes with hyperlinks and conditional formatting
 
 I need to be able to easily create hyperlinks for a table from dataframe, the easiest way being based on another column in the same dataframe. This will wrap `column` in the link from `column_HREF` by default. You can specify a different suffix.
 
