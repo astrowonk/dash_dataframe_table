@@ -49,26 +49,38 @@ def color_positive(val):
 
 
 ## make the conditional styling dictionary
+
+# the eval branch is nice because  the query string syntax is familiar but it's more limiting than passing a callable. hmm.
+
 cell_style_dict = {
-    'Company': [
-        (['Yahoo', 'Apple'], {
-            'font-weight': 'bold'
-        }),
-        (['Oracle'], {
-            'className': 'table-danger'
-        }),
-    ],
-    'Value2':
-    lambda x: {
-        'background-color': '#7FFFD4'
-    } if x > 10 else {},
-    'Date':
-    lambda x: {
+    'Company': ('Company == "Google"', {
         'className': 'table-info'
-    } if x.weekday() in [4, 6] else {},
-    'Value':
-    color_positive
+    }),
+    'Value2': ("4 < Value2 < 30", {
+        'background-color': '#7fffd4'
+    }),
 }
+
+# cell_style_dict = {
+#     'Company': [
+#         (['Yahoo', 'Apple'], {
+#             'font-weight': 'bold'
+#         }),
+#         (['Oracle'], {
+#             'className': 'table-danger'
+#         }),
+#     ],
+#     'Value2':
+#     lambda x: {
+#         'background-color': '#7FFFD4'
+#     } if x > 10 else {},
+#     'Date':
+#     lambda x: {
+#         'className': 'table-info'
+#     } if x.weekday() in [4, 6] else {},
+#     'Value':
+#     color_positive
+# }
 
 col_one = dbc.Col(dcc.Markdown(markdown_text), )
 col_two = dbc.Col([

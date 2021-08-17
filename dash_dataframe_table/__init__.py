@@ -63,6 +63,7 @@ class EnhancedTable(dbc.Table):
         table_body = [
             html.Tbody([
                 cls._make_row(x,
+                              df,
                               col_names,
                               link_column_suffix,
                               cell_style_dict=cell_style_dict,
@@ -75,6 +76,7 @@ class EnhancedTable(dbc.Table):
     @classmethod
     def _make_row(cls,
                   data_dict_entry,
+                  df,
                   col_names,
                   link_column_suffix,
                   cell_style_dict=None,
@@ -84,26 +86,16 @@ class EnhancedTable(dbc.Table):
             cell_style_dict = {}
 
         def process_table_cell(
+            df,
             col_name,
             link_names,
         ):
             """Add links to tables in the right way and handle nan strings."""
             style = {}
             if cell_style_entry := cell_style_dict.get(col_name):
-                if isinstance(cell_style_entry, list):
-                    for item in cell_style_entry:
-                        if data_dict_entry[col_name] in item[0]:
-                            style = item[1]
-                            print(style)
-
-                elif callable(cell_style_entry):
-                    if theStyle := cell_style_entry(data_dict_entry[col_name]):
-                        assert isinstance(
-                            theStyle, dict
-                        ), "cell_style Callable must return a dictionary"
-                        style = theStyle
-                else:
-                    style = {}
+                matched_entries = list(df.query(cell_style_entry[0])[col_name])
+                if data_dict_entry[col_name] in matched_entries:
+                    style = cell_style_entry[1]
             if (thehref := f"{col_name}{link_column_suffix}") in link_names:
 
                 if data_dict_entry[thehref].startswith("http"):
@@ -137,6 +129,6 @@ class EnhancedTable(dbc.Table):
 
         link_names = [x for x in col_names if x.endswith(link_column_suffix)]
         return html.Tr([
-            process_table_cell(x, link_names) for x in col_names
+            process_table_cell(df, x, link_names) for x in col_names
             if not x.endswith(link_column_suffix)
         ])
