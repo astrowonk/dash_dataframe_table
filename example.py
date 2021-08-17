@@ -9,7 +9,7 @@ from dash_dataframe_table import EnhancedTable
 with open("example.md", "r") as myfile:
     markdown_text = myfile.read()
 
-app = dash.Dash("example of dataframe",
+app = dash.Dash("Example of Enhanced Table from dataframe",
                 external_stylesheets=[dbc.themes.YETI],
                 title="Example Data Frame",
                 meta_tags=[
