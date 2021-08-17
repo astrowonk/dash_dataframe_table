@@ -1,5 +1,5 @@
 
-## Dash Bootstrap tabels from dataframes with hyperlinks and conditional formatting
+## Dash Bootstrap tables from dataframes with hyperlinks and conditional formatting
 
 I need to be able to easily create hyperlinks for a table from dataframe, the easiest way being based on another column in the same dataframe. This will wrap `column` in the link from `column_HREF` by default. You can specify a different suffix.
 
@@ -32,7 +32,7 @@ python example.py
 
 The `example.py` dash app shows it in action, both adding links automatically to the company column name, and styling the columns conditionally.
 
-I'm still debating if I should just monkey patch a new method onto `dbc.Table` or just subclass it as I've done here.
+I'm still debating if I should just monkey patch a new method onto `dbc.Table` or just subclass it as I've done here. The other branch implements this is a new method on the `dbc.Table` class.
 
 The company column is given hyperlinks from a midden `Company_HREF` column. See the `example.py` dash app code for more.
 
