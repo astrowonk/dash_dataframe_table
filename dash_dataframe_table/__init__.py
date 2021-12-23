@@ -6,7 +6,8 @@ import pandas as pd
 
 
 def _clean_header_names(x):
-    return x.replace('_', ' ').title()
+    if isinstance(x, str):
+        return x.replace('_', ' ').title()
 
 
 def enhanced_from_dataframe(cls,
