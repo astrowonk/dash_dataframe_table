@@ -56,13 +56,13 @@ def enhanced_from_dataframe(cls,
     if header_callable is None:
         header_column_cells = [
             html.Th(_clean_header_names(x)) for x in col_names
-            if not x.endswith(link_column_suffix)
+            if not str(x).endswith(link_column_suffix)
         ]
     else:
         assert callable(header_callable), "header_callable must be callable"
         header_column_cells = [
             html.Th(header_callable(_clean_header_names(x))) for x in col_names
-            if not x.endswith(link_column_suffix)
+            if not str(x).endswith(link_column_suffix)
         ]
     table_header = [html.Thead(html.Tr(header_column_cells))]
     table_body = [
