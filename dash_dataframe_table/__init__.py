@@ -8,6 +8,7 @@ import pandas as pd
 def _clean_header_names(x):
     if isinstance(x, str):
         return x.replace('_', ' ').title()
+    return x
 
 
 def enhanced_from_dataframe(cls,
@@ -99,7 +100,6 @@ def _make_row(data_dict_entry,
                 for item in cell_style_entry:
                     if data_dict_entry[col_name] in item[0]:
                         style = item[1]
-                        print(style)
 
             elif callable(cell_style_entry):
                 if theStyle := cell_style_entry(data_dict_entry[col_name]):
@@ -140,10 +140,10 @@ def _make_row(data_dict_entry,
                        style=style,
                        className=style.get('className'))
 
-    link_names = [x for x in col_names if x.endswith(link_column_suffix)]
+    link_names = [x for x in col_names if str(x).endswith(link_column_suffix)]
     return html.Tr([
         process_table_cell(x, link_names) for x in col_names
-        if not x.endswith(link_column_suffix)
+        if not str(x).endswith(link_column_suffix)
     ])
 
 
