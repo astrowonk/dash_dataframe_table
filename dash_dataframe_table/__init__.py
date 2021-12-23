@@ -18,6 +18,7 @@ def enhanced_from_dataframe(cls,
                             index=False,
                             index_label=None,
                             date_format=None,
+                            header_callable=None,
                             **table_kwargs):
     """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
     
@@ -52,10 +53,17 @@ def enhanced_from_dataframe(cls,
     data_dict = df[columns].to_dict(orient='records')
 
     col_names = list(data_dict[0].keys())
-    header_column_cells = [
-        html.Th(_clean_header_names(x)) for x in col_names
-        if not x.endswith(link_column_suffix)
-    ]
+    if header_callable is None:
+        header_column_cells = [
+            html.Th(_clean_header_names(x)) for x in col_names
+            if not x.endswith(link_column_suffix)
+        ]
+    else:
+        assert callable(header_callable), "header_callable must be callable"
+        header_column_cells = [
+            html.Th(header_callable(_clean_header_names(x))) for x in col_names
+            if not x.endswith(link_column_suffix)
+        ]
     table_header = [html.Thead(html.Tr(header_column_cells))]
     table_body = [
         html.Tbody([
