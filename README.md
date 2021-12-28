@@ -32,7 +32,7 @@ python example.py
 
 The `example.py` dash app shows it in action, both adding links automatically to the company column name, and styling the columns conditionally.
 
-I'm still debating if I should just monkey patch a new method onto `dbc.Table` or just subclass it as I've done here. The other branch implements this is a new method on the `dbc.Table` class.
+The module now monkeypatches a new `dbc.Table.from_enhanced_dataframe` onto the existing dbc.Table.
 
 The company column is given hyperlinks from a midden `Company_HREF` column. See the `example.py` dash app code for more.
 
