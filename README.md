@@ -69,7 +69,7 @@ cell_style_dict = {
 }
 
 html.Div(
-            EnhancedTable.from_dataframe(df, striped=True, cell_style_dict=my_style_dict)
+            dbc.Table.from_enhanced_dataframe(df, striped=True, cell_style_dict=my_style_dict)
         )
 ```
 
