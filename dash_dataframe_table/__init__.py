@@ -122,7 +122,8 @@ def _make_row(data_dict_entry,
                     href=str(data_dict_entry[thehref]),
                 ),
                                style=style,
-                               className=style.get('className'))
+                               className=style.get('className'),
+                               target=link_target)
             return html.Td(
                 dcc.Link(
                     str(data_dict_entry[col_name]),
