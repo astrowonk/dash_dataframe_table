@@ -117,13 +117,15 @@ def _make_row(data_dict_entry,
         if (thehref := f"{col_name}{link_column_suffix}") in link_names:
 
             if data_dict_entry[thehref].startswith("http"):
-                return html.Td(html.A(
-                    str(data_dict_entry[col_name]),
-                    href=str(data_dict_entry[thehref]),
-                ),
-                               style=style,
-                               className=style.get('className'),
-                               target=link_target)
+                return html.Td(
+                    html.A(
+                        str(data_dict_entry[col_name]),
+                        target=link_target,
+                        href=str(data_dict_entry[thehref]),
+                    ),
+                    style=style,
+                    className=style.get('className'),
+                )
             return html.Td(
                 dcc.Link(
                     str(data_dict_entry[col_name]),
