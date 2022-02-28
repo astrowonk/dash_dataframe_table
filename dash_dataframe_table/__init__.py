@@ -145,7 +145,7 @@ def _make_row(data_dict_entry,
                                'type': f'{col_name}-button',
                                'index': data_dict_entry[col_name]
                            },
-                           size='sm'), )
+                           color='link'), )
         elif isinstance(data_dict_entry[col_name], float):
             return html.Td(
                 f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
