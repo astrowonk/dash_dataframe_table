@@ -1,4 +1,4 @@
-from dash import dcc, html
+from dash import dcc, html, ALL
 
 import dash_bootstrap_components as dbc
 from numpy import nan_to_num
@@ -22,6 +22,7 @@ def enhanced_from_dataframe(cls,
                             date_format=None,
                             header_callable=None,
                             link_target=None,
+                            button_columns=None,
                             **table_kwargs):
     """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
     
@@ -76,7 +77,8 @@ def enhanced_from_dataframe(cls,
                       cell_style_dict=cell_style_dict,
                       float_format=float_format,
                       date_format=date_format,
-                      link_target=link_target) for x in data_dict
+                      link_target=link_target,
+                      button_columns=button_columns) for x in data_dict
         ])
     ]
     return cls(table_header + table_body, **table_kwargs)
@@ -88,7 +90,10 @@ def _make_row(data_dict_entry,
               cell_style_dict=None,
               float_format='.2f',
               date_format=None,
-              link_target=None):
+              link_target=None,
+              button_columns=None):
+    if button_columns is None:
+        button_columns = []
     if link_target is None:
         link_target = ''
     if cell_style_dict is None:
@@ -133,6 +138,14 @@ def _make_row(data_dict_entry,
                              style=style,
                              className=style.get('className')),
                 ))
+        elif col_name in button_columns:
+            return html.Td(
+                dbc.Button(data_dict_entry[col_name].title(),
+                           id={
+                               'type': f'{col_name}-button',
+                               'index': data_dict_entry[col_name]
+                           },
+                           size='sm'), )
         elif isinstance(data_dict_entry[col_name], float):
             return html.Td(
                 f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
