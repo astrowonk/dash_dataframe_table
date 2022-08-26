@@ -6,6 +6,10 @@ import pandas as pd
 import datetime
 import dash_dataframe_table
 
+import os
+parent_dir = os.getcwd().split('/')[-1]
+
+
 with open("example.md", "r") as myfile:
     markdown_text = myfile.read()
 
@@ -18,7 +22,7 @@ app = dash.Dash("Example of Enhanced Table from dataframe",
                         "content": "width=device-width, initial-scale=1"
                     },
                 ],
-                url_base_pathname='/dash/table_example/')
+                url_base_pathname=f'/dash/{parent_dir}/')
 server = app.server
 
 the_list = [
