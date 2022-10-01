@@ -23,6 +23,7 @@ def enhanced_from_dataframe(cls,
                             header_callable=None,
                             link_target=None,
                             button_columns=None,
+                            markdown_columns=None,
                             **table_kwargs):
     """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
     
@@ -78,7 +79,8 @@ def enhanced_from_dataframe(cls,
                       float_format=float_format,
                       date_format=date_format,
                       link_target=link_target,
-                      button_columns=button_columns) for x in data_dict
+                      button_columns=button_columns,
+                      markdown_columns=markdown_columns) for x in data_dict
         ])
     ]
     return cls(table_header + table_body, **table_kwargs)
@@ -91,9 +93,13 @@ def _make_row(data_dict_entry,
               float_format='.2f',
               date_format=None,
               link_target=None,
-              button_columns=None):
+              button_columns=None,
+              markdown_columns=None):
     if button_columns is None:
         button_columns = []
+    if markdown_columns is None:
+        markdown_columns = []
+
     if link_target is None:
         link_target = ''
     if cell_style_dict is None:
@@ -146,6 +152,8 @@ def _make_row(data_dict_entry,
                                'index': data_dict_entry[col_name]
                            },
                            color='link'), )
+        elif col_name in markdown_columns:
+            return html.Td(dcc.Markdown(data_dict_entry[col_name]), )
         elif isinstance(data_dict_entry[col_name], float):
             return html.Td(
                 f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
