@@ -1,6 +1,5 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 import dash_bootstrap_components as dbc
 import pandas as pd
 import datetime
@@ -8,7 +7,6 @@ import dash_dataframe_table
 
 import os
 parent_dir = os.getcwd().split('/')[-1]
-
 
 with open("example.md", "r") as myfile:
     markdown_text = myfile.read()
@@ -36,11 +34,16 @@ date_list = pd.date_range(start_date, periods=len(the_list)).tolist()
 ## make a simple dataframe with links
 
 df = pd.DataFrame([{
-    'Company': x,
-    "Company_HREF": f"https://{x.lower()}.com",
+    'Company':
+    x,
+    "Company_HREF":
+    f"https://{x.lower()}.com",
     "Value": (n - 4) / 13,
     "Value2": (n**4) / 13,
-    "Date": date_list[n]
+    "Date":
+    date_list[n],
+    "markdown_example":
+    f"""Everything in **here** is plain text in _Markdown_, created with an fstring for Company **{x}** """
 } for n, x in enumerate(the_list)])
 
 
@@ -84,7 +87,8 @@ col_two = dbc.Col([
         id='hello',
         float_format='.2f',
         date_format='%Y-%m-%d',
-        columns=['Company', 'Date', 'Value', 'Value2']),
+        columns=['Company', 'Date', 'Value', 'Value2', 'markdown_example'],
+        markdown_columns=['markdown_example']),
 ])
 
 app.layout = dbc.Container([dbc.Row([col_one, col_two])],
