@@ -5,6 +5,8 @@ I need to be able to easily create hyperlinks for a table from dataframe, the ea
 
 This is still a work in progress. The new method doesn't quite have the same functionality or keywords as the original yet, such as `header`. I'm still settling on a subclass or patching a new class method onto `dbc.Table` (which you can see in the other branch).
 
+I'm using the new walrus operator so you will need Python 3.8 or higher.
+
 ## Live Examples
 
 See the [example.py file running live](https://marcoshuerta.com/dash/table_example/).
