@@ -159,6 +159,10 @@ def _make_row(data_dict_entry,
                 f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
                 style=style,
                 className=style.get('className'))
+        elif isinstance(data_dict_entry[col_name], int):
+            return html.Td(f"{data_dict_entry[col_name]:,}",
+                           style=style,
+                           className=style.get('className'))
         elif date_format and isinstance(data_dict_entry[col_name],
                                         pd.Timestamp):
 
