@@ -11,6 +11,20 @@ def _clean_header_names(x):
     return x
 
 
+def process_header_class(col_name, cell_style_dict):
+    style = {}
+    if cell_style_entry := cell_style_dict.get(col_name):
+        if callable(cell_style_entry):
+            if theStyle := cell_style_entry(col_name):
+                assert isinstance(
+                    theStyle,
+                    dict), "cell_style Callable must return a dictionary"
+                style = theStyle
+    if the_class := style.get('className'):
+        return the_class
+    return None
+
+
 def enhanced_from_dataframe(cls,
                             df,
                             columns=None,
@@ -56,18 +70,23 @@ def enhanced_from_dataframe(cls,
     else:
         columns = df.columns
     data_dict = df[columns].to_dict(orient='records')
+    if cell_style_dict is None:
+        cell_style_dict = {}
 
     col_names = list(data_dict[0].keys())
     if header_callable is None:
         header_column_cells = [
-            html.Th(_clean_header_names(x)) for x in col_names
+            html.Th(_clean_header_names(x),
+                    className=process_header_class(
+                        x, cell_style_dict=cell_style_dict)) for x in col_names
             if not str(x).endswith(link_column_suffix)
         ]
     else:
         assert callable(header_callable), "header_callable must be callable"
         header_column_cells = [
-            html.Th(header_callable(_clean_header_names(x))) for x in col_names
-            if not str(x).endswith(link_column_suffix)
+            html.Th(header_callable(_clean_header_names(x)),
+                    className=process_header_class(x, cell_style_dict))
+            for x in col_names if not str(x).endswith(link_column_suffix)
         ]
     table_header = [html.Thead(html.Tr(header_column_cells))]
     table_body = [
