@@ -6,6 +6,7 @@ import datetime
 import dash_dataframe_table
 
 import os
+
 parent_dir = os.getcwd().split('/')[-1]
 
 with open("example.md", "r") as myfile:
@@ -38,8 +39,8 @@ df = pd.DataFrame([{
     x,
     "Company_HREF":
     f"https://{x.lower()}.com",
-    "Value": (n + 4) / 13,
-    "Value2": (n**4) / 13 - 5,
+    "Value": (n - 4) / 13,
+    "Value2": (n**4) / 13,
     "Date":
     date_list[n],
     "markdown_example":
@@ -47,8 +48,9 @@ df = pd.DataFrame([{
 } for n, x in enumerate(the_list)])
 
 
-def color_positive(x):
-    val = x['Value2']
+def color_positive(val):
+    if not isinstance(val, int):
+        return {}
     if val > 0:
         return {'className': 'table-success'}
     elif val < 0:
@@ -68,11 +70,13 @@ cell_style_dict = {
     'Value2':
     lambda x: {
         'background-color': '#7FFFD4'
-    } if x['Value2'] > 10 else {},
+    } if isinstance(x, int) and x > 10 else {
+    },  ## these needed because the callable gets applied on the string header. 
+    ## maybe the header should have its own callable tha controls class
     'Date':
     lambda x: {
         'className': 'table-info'
-    } if x['Date'].weekday() in [4, 6] else {},
+    } if isinstance(x, datetime.datetime) and x.weekday() in [4, 6] else {},
     'Value':
     color_positive
 }

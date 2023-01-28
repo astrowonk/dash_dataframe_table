@@ -137,7 +137,7 @@ def _make_row(data_dict_entry,
                         style = item[1]
 
             elif callable(cell_style_entry):
-                if theStyle := cell_style_entry(data_dict_entry):
+                if theStyle := cell_style_entry(data_dict_entry[col_name]):
                     assert isinstance(
                         theStyle,
                         dict), "cell_style Callable must return a dictionary"

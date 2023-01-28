@@ -12,12 +12,13 @@ The code below generates the conditional formatting you see. You can also add a 
 
 ```python
 
-def color_positive(x):
-    val = x['Value2']
+def color_positive(val):
+
     if val > 0:
         return {'className': 'table-success'}
     elif val < 0:
         return {'className': "table-warning"}
+
 
 
 cell_style_dict = {
