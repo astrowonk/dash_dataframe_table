@@ -11,7 +11,9 @@ def _clean_header_names(x):
     return x
 
 
-def process_header_class(col_name, cell_style_dict):
+def process_header_class(col_name, cell_style_dict, active=False):
+    if not active:
+        return
     style = {}
     if cell_style_entry := cell_style_dict.get(col_name):
         if callable(cell_style_entry):
@@ -25,20 +27,22 @@ def process_header_class(col_name, cell_style_dict):
     return None
 
 
-def enhanced_from_dataframe(cls,
-                            df,
-                            columns=None,
-                            link_column_suffix='_HREF',
-                            cell_style_dict=None,
-                            float_format='.2f',
-                            index=False,
-                            index_label=None,
-                            date_format=None,
-                            header_callable=None,
-                            link_target=None,
-                            button_columns=None,
-                            markdown_columns=None,
-                            **table_kwargs):
+def enhanced_from_dataframe(
+    cls,
+    df,
+    columns=None,
+    link_column_suffix='_HREF',
+    cell_style_dict=None,
+    float_format='.2f',
+    index=False,
+    index_label=None,
+    date_format=None,
+    header_callable=None,
+    link_target=None,
+    button_columns=None,
+    markdown_columns=None,
+    process_header_classes=False,  ## if true the cell style dict callable  will apply to header
+    **table_kwargs):
     """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
     
     cell_style_dict: dict of {column_name: {condition: style_dict}}
@@ -78,14 +82,17 @@ def enhanced_from_dataframe(cls,
         header_column_cells = [
             html.Th(_clean_header_names(x),
                     className=process_header_class(
-                        x, cell_style_dict=cell_style_dict)) for x in col_names
+                        x,
+                        cell_style_dict=cell_style_dict,
+                        active=process_header_classes)) for x in col_names
             if not str(x).endswith(link_column_suffix)
         ]
     else:
         assert callable(header_callable), "header_callable must be callable"
         header_column_cells = [
             html.Th(header_callable(_clean_header_names(x)),
-                    className=process_header_class(x, cell_style_dict))
+                    className=process_header_class(
+                        x, cell_style_dict, active=process_header_classes))
             for x in col_names if not str(x).endswith(link_column_suffix)
         ]
     table_header = [html.Thead(html.Tr(header_column_cells))]

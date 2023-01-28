@@ -49,8 +49,6 @@ df = pd.DataFrame([{
 
 
 def color_positive(val):
-    if not isinstance(val, int):
-        return {}
     if val > 0:
         return {'className': 'table-success'}
     elif val < 0:
@@ -70,13 +68,13 @@ cell_style_dict = {
     'Value2':
     lambda x: {
         'background-color': '#7FFFD4'
-    } if isinstance(x, int) and x > 10 else {
+    } if x > 10 else {
     },  ## these needed because the callable gets applied on the string header. 
     ## maybe the header should have its own callable tha controls class
     'Date':
     lambda x: {
         'className': 'table-info'
-    } if isinstance(x, datetime.datetime) and x.weekday() in [4, 6] else {},
+    } if x.weekday() in [4, 6] else {},
     'Value':
     color_positive
 }
