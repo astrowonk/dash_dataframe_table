@@ -18,7 +18,7 @@ URL = 'https://github.com/me/myproject'
 EMAIL = 'marcos@marcoshuerta.com'
 AUTHOR = 'Marcos Huerta'
 REQUIRES_PYTHON = '>=3.8.0'
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 
 # What packages are required for this module to be executed?
 REQUIRED = ['dash', 'dash_bootstrap_components', 'numpy', 'pandas']

@@ -166,10 +166,10 @@ def _make_row(data_dict_entry,
             return html.Td(
                 dcc.Link(
                     str(data_dict_entry[col_name]),
-                    href=str(data_dict_entry[thehref],
+                    href=str(data_dict_entry[thehref]),
                              style=style,
                              className=style.get('className')),
-                ))
+                )
         elif col_name in button_columns:
             return html.Td(
                 dbc.Button(data_dict_entry[col_name].title(),
