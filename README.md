@@ -7,10 +7,6 @@ This is still a work in progress. The new method doesn't quite have the same fun
 
 I'm using the new walrus operator so you will need Python 3.8 or higher.
 
-## Live Examples
-
-See the [example.py file running live](https://marcoshuerta.com/dash/table_example/).
-
 ## Installation
 
 setup.py installs an egg which was causing dash to crash when debugging for reasons I can't explain. So clone and do the `pip install .` Maybe because I'm subclassing a component directly and that's not how components are generally created?
