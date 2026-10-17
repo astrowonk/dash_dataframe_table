@@ -18,9 +18,9 @@ def process_header_class(col_name, cell_style_dict, active=False):
     if cell_style_entry := cell_style_dict.get(col_name):
         if callable(cell_style_entry):
             if theStyle := cell_style_entry(col_name):
-                assert isinstance(
-                    theStyle,
-                    dict), "cell_style Callable must return a dictionary"
+                assert isinstance(theStyle, dict), (
+                    'cell_style Callable must return a dictionary'
+                )
                 style = theStyle
     if the_class := style.get('className'):
         return the_class
@@ -38,39 +38,42 @@ def enhanced_from_dataframe(
     index_label=None,
     date_format=None,
     header_callable=None,
+    callable_column_map=None,
     link_target=None,
     button_columns=None,
     markdown_columns=None,
     process_header_classes=False,  ## if true the cell style dict callable  will apply to header
-    **table_kwargs):
+    **table_kwargs,
+):
     """make a dash table from a pandas dataframe but add hyperlinks based on matching column names. Conditionally style a column or columns
-    
+
     cell_style_dict: dict of {column_name: {condition: style_dict}}
-    
+
     condition can be astring or a function that returns a boolean
 
-    if condition is a string, it must match the value of the column exactly. 
-    
+    if condition is a string, it must match the value of the column exactly.
+
     """
     if df.empty:
         return cls()
     if index:
         df = df.reset_index()
         if index_label is not None:
-            df = df.rename(columns={"index": index_label})
+            df = df.rename(columns={'index': index_label})
 
     if date_format is not None:
-        for c in df.select_dtypes(["datetime"]).columns:
+        for c in df.select_dtypes(['datetime']).columns:
             df[c] = pd.to_datetime(df[c])
 
     if columns is not None:
         # needed in case columns keyword would otherwise remove  out the link column
         column_order_dict = {key: val for val, key in enumerate(columns)}
-        columns = sorted(set(
-            list(columns) +
-            [f"{col + link_column_suffix}"
-             for col in df.columns]).intersection(set(df.columns)),
-                         key=lambda x: column_order_dict.get(x, float('inf')))
+        columns = sorted(
+            set(
+                list(columns) + [f'{col + link_column_suffix}' for col in df.columns]
+            ).intersection(set(df.columns)),
+            key=lambda x: column_order_dict.get(x, float('inf')),
+        )
     else:
         columns = df.columns
     data_dict = df[columns].to_dict(orient='records')
@@ -80,51 +83,66 @@ def enhanced_from_dataframe(
     col_names = list(data_dict[0].keys())
     if header_callable is None:
         header_column_cells = [
-            html.Th(_clean_header_names(x),
-                    className=process_header_class(
-                        x,
-                        cell_style_dict=cell_style_dict,
-                        active=process_header_classes)) for x in col_names
+            html.Th(
+                _clean_header_names(x),
+                className=process_header_class(
+                    x, cell_style_dict=cell_style_dict, active=process_header_classes
+                ),
+            )
+            for x in col_names
             if not str(x).endswith(link_column_suffix)
         ]
     else:
-        assert callable(header_callable), "header_callable must be callable"
+        assert callable(header_callable), 'header_callable must be callable'
         header_column_cells = [
-            html.Th(header_callable(_clean_header_names(x)),
-                    className=process_header_class(
-                        x, cell_style_dict, active=process_header_classes))
-            for x in col_names if not str(x).endswith(link_column_suffix)
+            html.Th(
+                header_callable(_clean_header_names(x)),
+                className=process_header_class(
+                    x, cell_style_dict, active=process_header_classes
+                ),
+            )
+            for x in col_names
+            if not str(x).endswith(link_column_suffix)
         ]
     table_header = [html.Thead(html.Tr(header_column_cells))]
     table_body = [
         html.Tbody([
-            _make_row(x,
-                      col_names,
-                      link_column_suffix,
-                      cell_style_dict=cell_style_dict,
-                      float_format=float_format,
-                      date_format=date_format,
-                      link_target=link_target,
-                      button_columns=button_columns,
-                      markdown_columns=markdown_columns) for x in data_dict
+            _make_row(
+                x,
+                col_names,
+                link_column_suffix,
+                cell_style_dict=cell_style_dict,
+                float_format=float_format,
+                date_format=date_format,
+                link_target=link_target,
+                button_columns=button_columns,
+                markdown_columns=markdown_columns,
+                callable_column_map=callable_column_map,
+            )
+            for x in data_dict
         ])
     ]
     return cls(table_header + table_body, **table_kwargs)
 
 
-def _make_row(data_dict_entry,
-              col_names,
-              link_column_suffix,
-              cell_style_dict=None,
-              float_format='.2f',
-              date_format=None,
-              link_target=None,
-              button_columns=None,
-              markdown_columns=None):
+def _make_row(
+    data_dict_entry,
+    col_names,
+    link_column_suffix,
+    cell_style_dict=None,
+    float_format='.2f',
+    date_format=None,
+    link_target=None,
+    callable_column_map=None,
+    button_columns=None,
+    markdown_columns=None,
+):
     if button_columns is None:
         button_columns = []
     if markdown_columns is None:
         markdown_columns = []
+    if callable_column_map is None:
+        callable_column_map = {}
 
     if link_target is None:
         link_target = ''
@@ -145,15 +163,14 @@ def _make_row(data_dict_entry,
 
             elif callable(cell_style_entry):
                 if theStyle := cell_style_entry(data_dict_entry[col_name]):
-                    assert isinstance(
-                        theStyle,
-                        dict), "cell_style Callable must return a dictionary"
+                    assert isinstance(theStyle, dict), (
+                        'cell_style Callable must return a dictionary'
+                    )
                     style = theStyle
             else:
                 style = {}
-        if (thehref := f"{col_name}{link_column_suffix}") in link_names:
-
-            if data_dict_entry[thehref].startswith("http"):
+        if (thehref := f'{col_name}{link_column_suffix}') in link_names:
+            if data_dict_entry[thehref].startswith('http'):
                 return html.Td(
                     html.A(
                         str(data_dict_entry[col_name]),
@@ -167,41 +184,48 @@ def _make_row(data_dict_entry,
                 dcc.Link(
                     str(data_dict_entry[col_name]),
                     href=str(data_dict_entry[thehref]),
-                             style=style,
-                             className=style.get('className')),
-                )
+                    style=style,
+                    className=style.get('className'),
+                ),
+            )
+        elif col_name in callable_column_map:
+            return html.Td(callable_column_map[col_name](data_dict_entry[col_name]))
         elif col_name in button_columns:
             return html.Td(
-                dbc.Button(data_dict_entry[col_name].title(),
-                           id={
-                               'type': f'{col_name}-button',
-                               'index': data_dict_entry[col_name]
-                           },
-                           color='link'), )
+                dbc.Button(
+                    data_dict_entry[col_name].title(),
+                    id={'type': f'{col_name}-button', 'index': data_dict_entry[col_name]},
+                    color='link',
+                ),
+            )
         elif col_name in markdown_columns:
-            return html.Td(dcc.Markdown(data_dict_entry[col_name]), )
+            return html.Td(
+                dcc.Markdown(data_dict_entry[col_name]),
+            )
         elif isinstance(data_dict_entry[col_name], float):
             return html.Td(
-                f"{nan_to_num(data_dict_entry[col_name]):{float_format}}",
+                f'{nan_to_num(data_dict_entry[col_name]):{float_format}}',
                 style=style,
-                className=style.get('className'))
+                className=style.get('className'),
+            )
         elif isinstance(data_dict_entry[col_name], int):
-            return html.Td(f"{data_dict_entry[col_name]:,}",
-                           style=style,
-                           className=style.get('className'))
-        elif date_format and isinstance(data_dict_entry[col_name],
-                                        pd.Timestamp):
-
-            return html.Td(data_dict_entry[col_name].strftime(date_format),
-                           style=style,
-                           className=style.get('className'))
-        return html.Td(str(data_dict_entry[col_name]),
-                       style=style,
-                       className=style.get('className'))
+            return html.Td(
+                f'{data_dict_entry[col_name]:,}', style=style, className=style.get('className')
+            )
+        elif date_format and isinstance(data_dict_entry[col_name], pd.Timestamp):
+            return html.Td(
+                data_dict_entry[col_name].strftime(date_format),
+                style=style,
+                className=style.get('className'),
+            )
+        return html.Td(
+            str(data_dict_entry[col_name]), style=style, className=style.get('className')
+        )
 
     link_names = [x for x in col_names if str(x).endswith(link_column_suffix)]
     return html.Tr([
-        process_table_cell(x, link_names) for x in col_names
+        process_table_cell(x, link_names)
+        for x in col_names
         if not str(x).endswith(link_column_suffix)
     ])
 
